@@ -151,13 +151,26 @@ echo ""
 echo "Environment variables saved to db_visualizer/postgres.env"
 echo "To use with Node.js viewer, run: source db_visualizer/postgres.env"
 
-# Note: The optional Simple DB Viewer (Node.js) is not started automatically to avoid dependency issues.
-# To run it manually:
-#   1) cd db_visualizer
-#   2) npm install --no-audit --no-fund --silent
-#   3) source ../db_visualizer/postgres.env
-#   4) npm start
-# The viewer will be available on http://localhost:3000 by default.
+# Optional: Start the Simple DB Viewer ONLY when explicitly enabled.
+# Guarded by DB_VIEWER=1 to avoid failing the container on missing Node deps.
+if [ "${DB_VIEWER}" = "1" ]; then
+  echo "DB_VIEWER=1 detected - attempting to start optional Simple DB Viewer..."
+  if command -v node >/dev/null 2>&1; then
+    if [ -f "db_visualizer/package.json" ]; then
+      echo "Installing viewer dependencies (silent)..."
+      (cd db_visualizer && npm install --no-audit --no-fund --silent) || echo "Warning: npm install failed; viewer will not start."
+      echo "Starting viewer in background on http://localhost:3000 ..."
+      # Run in background and do not block Postgres container lifecycle
+      (cd db_visualizer && npm start >/dev/null 2>&1 &) || echo "Warning: viewer failed to start."
+    else
+      echo "Viewer package.json not found. Skipping viewer start."
+    fi
+  else
+    echo "Node is not installed in this image. Skipping viewer start."
+  fi
+else
+  echo "DB_VIEWER not set to 1; Simple DB Viewer will NOT be started automatically."
+fi
 
 echo "To connect to the database, use one of the following commands:"
 echo "psql -h localhost -U ${DB_USER} -d ${DB_NAME} -p ${DB_PORT}"

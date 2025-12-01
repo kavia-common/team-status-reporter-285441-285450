@@ -2,7 +2,9 @@
 
 This is an optional helper Node.js app to quickly inspect databases (PostgreSQL, MySQL, SQLite, MongoDB) from this container.
 
-It is intentionally NOT started automatically during Postgres startup to avoid container failures if Node dependencies are not installed.
+Auto-start: Disabled by default to prevent container failures if Node dependencies are not installed.
+- To enable auto-start on container boot, set environment variable: DB_VIEWER=1
+- Without DB_VIEWER=1, the viewer will NOT be started automatically.
 
 How to run manually:
 1. cd db_visualizer
