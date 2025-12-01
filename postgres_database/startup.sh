@@ -31,11 +31,12 @@ print_connection_help() {
   fi
 }
 
-# If PostgreSQL is already running, exit 0 cleanly
+# If PostgreSQL is already running, exit 0 cleanly with info
 if sudo -u postgres "${PG_BIN}/pg_isready" -p "${DB_PORT}" >/dev/null 2>&1; then
   log "PostgreSQL is already running on port ${DB_PORT}."
   print_connection_help
-  log "startup.sh completed successfully (PostgreSQL already running)"
+  log "[OK] startup.sh completed successfully (PostgreSQL already running)."
+  log "[CONFIRM] Viewer startup is skipped by default; set DB_VIEWER=1 to enable."
   exit 0
 fi
 
@@ -45,6 +46,8 @@ if pgrep -f "postgres.*-p ${DB_PORT}" >/dev/null 2>&1; then
   if sudo -u postgres "${PG_BIN}/psql" -p "${DB_PORT}" -d "${DB_NAME}" -c '\q' >/dev/null 2>&1; then
     log "Database ${DB_NAME} is accessible. Exiting successfully."
     print_connection_help
+    log "[OK] startup.sh completed successfully (PostgreSQL already running)."
+    log "[CONFIRM] Viewer startup is skipped by default; set DB_VIEWER=1 to enable."
     exit 0
   fi
 fi
@@ -72,7 +75,9 @@ done
 
 # Create database (idempotent)
 log "Ensuring database ${DB_NAME} exists..."
-sudo -u postgres "${PG_BIN}/createdb" -p "${DB_PORT}" "${DB_NAME}" 2>/dev/null || log "Database may already exist."
+if ! sudo -u postgres "${PG_BIN}/createdb" -p "${DB_PORT}" "${DB_NAME}" 2>/dev/null; then
+  log "Database may already exist."
+fi
 
 # Create/alter user and grant permissions (idempotent)
 log "Ensuring user and permissions..."
@@ -131,7 +136,7 @@ if [ "${DB_VIEWER:-0}" = "1" ]; then
           log "Starting viewer in background on http://localhost:3000 ..."
           # Do not block container; suppress noisy output
           (cd db_visualizer && npm start >/dev/null 2>&1 &) || log "Warning: viewer failed to start."
-        } else {
+        else
           log "Warning: express dependency not found after install; skipping viewer start."
         fi
       else
@@ -149,5 +154,5 @@ fi
 
 log "PostgreSQL setup complete."
 print_connection_help
-log "[OK] postgres_database: startup.sh completed successfully"
-log "Confirmation: No unconditional 'npm start' or 'node server.js' is executed; db_visualizer starts only when DB_VIEWER=1 and dependencies are present. If PostgreSQL is already running, this script exits 0."
+log "[OK] postgres_database: startup.sh completed successfully."
+log "[CONFIRM] No unconditional 'npm start' or 'node server.js' executed; db_visualizer only runs when DB_VIEWER=1 and dependencies exist."
