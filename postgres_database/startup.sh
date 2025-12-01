@@ -152,6 +152,8 @@ if [ "${DB_VIEWER:-0}" = "1" ]; then
   fi
 else
   log "DB_VIEWER is not 1; skipping optional Simple DB Viewer startup."
+  # Ensure successful completion marker for environments relying on this guard path
+  log "[CONFIRM] Viewer skipped by guard (DB_VIEWER!=1). This is expected and not an error."
 fi
 
 log "PostgreSQL setup complete."
