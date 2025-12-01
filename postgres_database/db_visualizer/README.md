@@ -16,5 +16,5 @@ How to run manually:
 Default host/port: http://0.0.0.0:3000 (accessible on localhost if port mapped)
 
 Note:
-- The database container never executes `npm start` or `node server.js` for this viewer unless DB_VIEWER=1 is set.
+- The database container never executes `npm start` or `node server.js` for this viewer unless DB_VIEWER=1 is set. When DB_VIEWER is not set to 1, `npm start` for this package intentionally exits with non-zero status to prevent accidental runs.
 - If Node/npm are not present or dependencies fail to install, startup is skipped and the database continues to run normally.

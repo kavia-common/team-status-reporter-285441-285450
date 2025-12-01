@@ -125,18 +125,19 @@ EOF
 log "Environment variables saved to db_visualizer/postgres.env"
 log "To use with Node.js viewer, run: source db_visualizer/postgres.env"
 
-# Strictly optional viewer start: only when DB_VIEWER=1 and deps available
+# Strictly optional viewer start: only when DB_VIEWER=1 and deps available.
+# Never start viewer by default; ensure no accidental node execution.
 if [ "${DB_VIEWER:-0}" = "1" ]; then
   log "DB_VIEWER=1 detected - attempting to start optional Simple DB Viewer..."
   if command -v node >/dev/null 2>&1 && command -v npm >/dev/null 2>&1; then
     if [ -f "db_visualizer/package.json" ]; then
       log "Installing viewer dependencies (silent)..."
-      if (cd db_visualizer && npm install --no-audit --no-fund --silent); then
+      if (cd db_visualizer && npm ci --no-audit --no-fund --silent >/dev/null 2>&1 || cd db_visualizer && npm install --no-audit --no-fund --silent >/dev/null 2>&1); then
         # Extra safety: ensure express is installed before attempting start
         if [ -d "db_visualizer/node_modules/express" ]; then
           log "Starting viewer in background on http://localhost:3000 ..."
           # Do not block container; suppress noisy output
-          (cd db_visualizer && npm start >/dev/null 2>&1 &) || log "Warning: viewer failed to start."
+          (cd db_visualizer && DB_VIEWER=1 npm start >/dev/null 2>&1 &) || log "Warning: viewer failed to start."
         else
           log "Warning: express dependency not found after install; skipping viewer start."
         fi
@@ -157,3 +158,5 @@ log "PostgreSQL setup complete."
 print_connection_help
 log "[OK] postgres_database: startup.sh completed successfully."
 log "[CONFIRM] No unconditional 'npm start' or 'node server.js' executed; db_visualizer only runs when DB_VIEWER=1 and dependencies exist."
+# Emit final explicit marker for CI/diagnostics:
+echo "[startup-complete] postgres running on port ${DB_PORT}; db_visualizer_started=$([ \"${DB_VIEWER:-0}\" = \"1\" ] && echo yes || echo no)"
