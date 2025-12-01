@@ -1,3 +1,13 @@
+/**
+ * Notice:
+ * This viewer is optional and NOT auto-started by the postgres_database container.
+ * The container's startup.sh never invokes npm start or node server.js unless:
+ *   - DB_VIEWER=1 is set, and
+ *   - Node/npm are present, and
+ *   - Dependencies (e.g., express) are installed successfully.
+ * You can run it manually from this folder with:
+ *   DB_VIEWER=1 npm install --no-audit --no-fund --silent && DB_VIEWER=1 npm start
+ */
 const express = require('express');
 const path = require('path');
 const fs = require('fs');

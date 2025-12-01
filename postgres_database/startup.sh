@@ -37,6 +37,7 @@ if sudo -u postgres "${PG_BIN}/pg_isready" -p "${DB_PORT}" >/dev/null 2>&1; then
   print_connection_help
   log "[OK] startup.sh completed successfully (PostgreSQL already running)."
   log "[CONFIRM] Viewer startup is skipped by default; set DB_VIEWER=1 to enable."
+  echo "[startup-check] postgres_database: ready on port ${DB_PORT}; db_visualizer not started (DB_VIEWER!=1)"
   exit 0
 fi
 
