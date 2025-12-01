@@ -31,6 +31,7 @@ if sudo -u postgres ${PG_BIN}/pg_isready -p ${DB_PORT} > /dev/null 2>&1; then
     
     echo ""
     echo "Script stopped - server already running."
+    echo "[OK] postgres_database: startup.sh completed successfully (PostgreSQL already running)"
     exit 0
 fi
 
@@ -175,3 +176,4 @@ fi
 echo "To connect to the database, use one of the following commands:"
 echo "psql -h localhost -U ${DB_USER} -d ${DB_NAME} -p ${DB_PORT}"
 echo "$(cat db_connection.txt)"
+echo "[OK] postgres_database: startup.sh completed successfully"
