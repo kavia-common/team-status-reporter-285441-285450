@@ -151,6 +151,14 @@ echo ""
 echo "Environment variables saved to db_visualizer/postgres.env"
 echo "To use with Node.js viewer, run: source db_visualizer/postgres.env"
 
+# Note: The optional Simple DB Viewer (Node.js) is not started automatically to avoid dependency issues.
+# To run it manually:
+#   1) cd db_visualizer
+#   2) npm install --no-audit --no-fund --silent
+#   3) source ../db_visualizer/postgres.env
+#   4) npm start
+# The viewer will be available on http://localhost:3000 by default.
+
 echo "To connect to the database, use one of the following commands:"
 echo "psql -h localhost -U ${DB_USER} -d ${DB_NAME} -p ${DB_PORT}"
 echo "$(cat db_connection.txt)"
