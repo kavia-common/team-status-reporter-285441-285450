@@ -162,3 +162,4 @@ log "[OK] postgres_database: startup.sh completed successfully."
 log "[CONFIRM] No unconditional 'npm start' or 'node server.js' executed; db_visualizer only runs when DB_VIEWER=1 and dependencies exist."
 # Emit final explicit marker for CI/diagnostics:
 echo "[startup-complete] postgres running on port ${DB_PORT}; db_visualizer_started=$([ \"${DB_VIEWER:-0}\" = \"1\" ] && echo yes || echo no)"
+exit 0

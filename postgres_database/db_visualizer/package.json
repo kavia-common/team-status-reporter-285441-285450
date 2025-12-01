@@ -5,8 +5,8 @@
   "private": true,
   "main": "server.js",
   "scripts": {
-    "start": "sh -c 'if [ \"${DB_VIEWER:-0}\" = \"1\" ]; then node server.js --host 0.0.0.0; else echo \"DB_VIEWER not set to 1; skipping viewer start.\" >&2; exit 0; fi'",
-    "dev": "sh -c 'if [ \"${DB_VIEWER:-0}\" = \"1\" ]; then nodemon server.js; else echo \"DB_VIEWER not set to 1; skipping viewer dev start.\" >&2; exit 0; fi'"
+    "start": "sh -c 'if [ \"${DB_VIEWER:-0}\" = \"1\" ]; then node server.js --host 0.0.0.0; else echo \"DB_VIEWER!=1: skipping viewer start (will exit 0).\" >&2; exit 0; fi'",
+    "dev": "sh -c 'if [ \"${DB_VIEWER:-0}\" = \"1\" ]; then nodemon server.js; else echo \"DB_VIEWER!=1: skipping viewer dev start (will exit 0).\" >&2; exit 0; fi'"
   },
   "dependencies": {
     "express": "^4.18.2",
