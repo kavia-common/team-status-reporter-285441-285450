@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict paIEbrXIoqMr7mJ94qP4KWlbgDkkj1fnItWBJI8aV0AEJdaXxy8z3SXMXlAeHCu
+\restrict YO2GjjOrXQ77shRHubJRzVmjpol6hecG2XsENnYItwJiKzUlQEqoW9d2yR1lpBj
 
 -- Dumped from database version 16.10 (Ubuntu 16.10-0ubuntu0.24.04.1)
 -- Dumped by pg_dump version 16.10 (Ubuntu 16.10-0ubuntu0.24.04.1)
@@ -28,9 +28,9 @@ CREATE DATABASE myapp WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDE
 
 ALTER DATABASE myapp OWNER TO postgres;
 
-\unrestrict paIEbrXIoqMr7mJ94qP4KWlbgDkkj1fnItWBJI8aV0AEJdaXxy8z3SXMXlAeHCu
+\unrestrict YO2GjjOrXQ77shRHubJRzVmjpol6hecG2XsENnYItwJiKzUlQEqoW9d2yR1lpBj
 \connect myapp
-\restrict paIEbrXIoqMr7mJ94qP4KWlbgDkkj1fnItWBJI8aV0AEJdaXxy8z3SXMXlAeHCu
+\restrict YO2GjjOrXQ77shRHubJRzVmjpol6hecG2XsENnYItwJiKzUlQEqoW9d2yR1lpBj
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -437,6 +437,7 @@ COPY public.role_permissions (role_id, permission_id, created_at) FROM stdin;
 --
 
 COPY public.roles (id, name, description, created_at, updated_at, deleted_at) FROM stdin;
+174c82a6-541e-4bc3-a1ef-08b6f1a38258	admin	\N	2025-12-01 23:18:29.406261+00	2025-12-01 23:18:29.406261+00	\N
 \.
 
 
@@ -1574,5 +1575,5 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES 
 -- PostgreSQL database dump complete
 --
 
-\unrestrict paIEbrXIoqMr7mJ94qP4KWlbgDkkj1fnItWBJI8aV0AEJdaXxy8z3SXMXlAeHCu
+\unrestrict YO2GjjOrXQ77shRHubJRzVmjpol6hecG2XsENnYItwJiKzUlQEqoW9d2yR1lpBj
 

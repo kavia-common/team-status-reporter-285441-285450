@@ -15,6 +15,7 @@ set -euo pipefail
 # - Reads and normalizes the connection URL from db_connection.txt (trims leading 'psql ' and whitespace/CR)
 # - Applies schema with psql "$URL" to avoid socket fallback issues
 # - Optionally applies seed when --seed flag is used
+# - Applies backend bootstrap SQLs for roles and teams when present
 
 log() { echo "[init_schema] $*"; }
 fail() { echo "[init_schema][ERROR] $*" >&2; exit 1; }
@@ -55,6 +56,27 @@ log "Applying schema from ./schema/init_schema.sql ..."
 # Use explicit quoting to pass the full URL as a single argument to psql
 psql "${CONN_URL}" -v ON_ERROR_STOP=1 -f "schema/init_schema.sql" || fail "Failed to apply schema."
 
+# Resolve absolute paths to backend bootstrap SQLs
+BACKEND_ROLES_SQL="/home/kavia/workspace/code-generation/team-status-reporter-285441-285451/express_backend/src/db/bootstrap_roles.sql"
+BACKEND_TEAMS_SQL="/home/kavia/workspace/code-generation/team-status-reporter-285441-285451/express_backend/src/db/bootstrap_teams.sql"
+
+apply_sql_if_exists() {
+  local file_path="$1"
+  local label="$2"
+  if [[ -f "${file_path}" ]]; then
+    log "Applying ${label} from ${file_path} ..."
+    # ON_ERROR_STOP to ensure non-zero exit on SQL errors
+    psql "${CONN_URL}" -v ON_ERROR_STOP=1 -f "${file_path}" || fail "Failed to apply ${label} (${file_path})."
+    log "Applied ${label}: ${file_path}"
+  else
+    log "Skip ${label}: not found at ${file_path}"
+  fi
+}
+
+# Apply backend bootstraps (after core schema; before optional seeds to allow seeds to assume base data)
+apply_sql_if_exists "${BACKEND_ROLES_SQL}" "backend bootstrap (roles)"
+apply_sql_if_exists "${BACKEND_TEAMS_SQL}" "backend bootstrap (teams)"
+
 # Optional seed
 if [[ "${1-}" == "--seed" ]]; then
   if [[ ! -f "./schema/seed_dev.sql" ]]; then
@@ -64,4 +86,4 @@ if [[ "${1-}" == "--seed" ]]; then
   psql "${CONN_URL}" -v ON_ERROR_STOP=1 -f "schema/seed_dev.sql" || fail "Failed to apply seed data."
 fi
 
-log "Done."
+log "All applicable steps completed successfully."
