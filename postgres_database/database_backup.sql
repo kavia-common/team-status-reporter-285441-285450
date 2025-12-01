@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict J3z2cwARNrPKoBAa49th8ghml5b5t2YLpcShGE1YdS12pP3GohP5xODorGSQNVP
+\restrict kkZyW7qQoO5Wno1OdTju3oPUQ6KZa1ZPa9Ec19eI8OnkCycaIdOHEuH0cuUBJil
 
 -- Dumped from database version 16.10 (Ubuntu 16.10-0ubuntu0.24.04.1)
 -- Dumped by pg_dump version 16.10 (Ubuntu 16.10-0ubuntu0.24.04.1)
@@ -28,9 +28,9 @@ CREATE DATABASE myapp WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDE
 
 ALTER DATABASE myapp OWNER TO postgres;
 
-\unrestrict J3z2cwARNrPKoBAa49th8ghml5b5t2YLpcShGE1YdS12pP3GohP5xODorGSQNVP
+\unrestrict kkZyW7qQoO5Wno1OdTju3oPUQ6KZa1ZPa9Ec19eI8OnkCycaIdOHEuH0cuUBJil
 \connect myapp
-\restrict J3z2cwARNrPKoBAa49th8ghml5b5t2YLpcShGE1YdS12pP3GohP5xODorGSQNVP
+\restrict kkZyW7qQoO5Wno1OdTju3oPUQ6KZa1ZPa9Ec19eI8OnkCycaIdOHEuH0cuUBJil
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -182,7 +182,9 @@ CREATE TABLE public.users (
     name text,
     is_active boolean DEFAULT true NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    deleted_at timestamp with time zone,
+    role text DEFAULT 'user'::text
 );
 
 
@@ -249,7 +251,8 @@ COPY public.user_roles (user_id, role_id) FROM stdin;
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: appuser
 --
 
-COPY public.users (id, email, password_hash, name, is_active, created_at, updated_at) FROM stdin;
+COPY public.users (id, email, password_hash, name, is_active, created_at, updated_at, deleted_at, role) FROM stdin;
+93fd98f2-341c-4255-bf24-04e84f1fe029	testuser@example.com	$2b$10$zYv.6j/Y0zKewZWdJ4TJ0ubfuXfRRAvyiPCIAGPOLw4xolJyqmV2O	Test User	t	2025-12-01 16:48:59.956196+00	2025-12-01 16:48:59.956196+00	\N	user
 \.
 
 
@@ -1103,5 +1106,5 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES 
 -- PostgreSQL database dump complete
 --
 
-\unrestrict J3z2cwARNrPKoBAa49th8ghml5b5t2YLpcShGE1YdS12pP3GohP5xODorGSQNVP
+\unrestrict kkZyW7qQoO5Wno1OdTju3oPUQ6KZa1ZPa9Ec19eI8OnkCycaIdOHEuH0cuUBJil
 
