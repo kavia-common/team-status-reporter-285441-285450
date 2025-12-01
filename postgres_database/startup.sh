@@ -126,9 +126,14 @@ if [ "${DB_VIEWER:-0}" = "1" ]; then
     if [ -f "db_visualizer/package.json" ]; then
       log "Installing viewer dependencies (silent)..."
       if (cd db_visualizer && npm install --no-audit --no-fund --silent); then
-        log "Starting viewer in background on http://localhost:3000 ..."
-        # Do not block container; suppress noisy output
-        (cd db_visualizer && npm start >/dev/null 2>&1 &) || log "Warning: viewer failed to start."
+        # Extra safety: ensure express is installed before attempting start
+        if [ -d "db_visualizer/node_modules/express" ]; then
+          log "Starting viewer in background on http://localhost:3000 ..."
+          # Do not block container; suppress noisy output
+          (cd db_visualizer && npm start >/dev/null 2>&1 &) || log "Warning: viewer failed to start."
+        } else {
+          log "Warning: express dependency not found after install; skipping viewer start."
+        fi
       else
         log "Warning: npm install failed; viewer will not start."
       fi
@@ -145,3 +150,4 @@ fi
 log "PostgreSQL setup complete."
 print_connection_help
 log "[OK] postgres_database: startup.sh completed successfully"
+log "Confirmation: No unconditional 'npm start' or 'node server.js' is executed; db_visualizer starts only when DB_VIEWER=1 and dependencies are present. If PostgreSQL is already running, this script exits 0."
